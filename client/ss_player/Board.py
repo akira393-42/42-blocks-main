@@ -52,7 +52,7 @@ class Board:
     @property
     def shape_y(self) -> int:
         return self.__board.shape[0]
-    
+
     def get_point(self, player: Player) -> int:
         score = 0
         if len(player.usable_blocks()) == 0:
@@ -125,6 +125,21 @@ class Board:
                 for b in row])
             ret.append(f'{row_id}{"".join(row_str)}')
         return '\n'.join(ret)
+
+    def get_candidate_positions(self):
+        candidate_positions = set()
+        height, width = len(self.__board), len(self.__board[0])
+
+        for y in range(1,height+1):
+            for x in range(1,width+1):
+                if self.__board[y][x] == 1:  # すでにピースが置かれている場合
+                    # 周囲のマスをチェック
+                    for dy, dx in [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
+                        ny, nx = y + dy, x + dx
+                        if 0 <= ny < height and 0 <= nx < width and self.__board[ny][nx] == 0:
+                            candidate_positions.add((ny, nx))
+
+        return candidate_positions
 
     class PaddedBlock:
 

@@ -3,7 +3,7 @@ import asyncio
 import websockets
 from ss_player.Blocks import Blocks
 from ss_player.Board import Board
-from ss_player.Logic import Logic 
+from ss_player.Logic import Logic
 from ss_player.Player import Player
 
 
@@ -46,7 +46,13 @@ class PlayerClient:
         actions: list[str]
         turn: int
         self.board.set_board(board_str)
-        
+        if self.player_number == 1:
+            self.p1turn += 1
+            return self.logic.get_available_actions(self.board,self.blocks,self.player,self.p1turn)
+        if self.player_number == 2:
+            self.p2turn += 1
+            return self.logic.get_available_actions(self.board,self.blocks,self.player,self.p2turn)
+
 
         return self.logic.get_available_actions(self.board,self.blocks,self.player)
 
@@ -64,7 +70,7 @@ class PlayerClient:
         else:
             # パスを選択
             return 'X000'
-    
+
     @staticmethod
     async def create(url: str, loop: asyncio.AbstractEventLoop) -> PlayerClient:
         socket = await websockets.connect(url)
